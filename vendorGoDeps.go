@@ -52,7 +52,7 @@ func main() {
 	var deps Godeps
 
 	if err := json.Unmarshal([]byte(fileContent), &deps); err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
 
 	var submodules = make(map[string]string)
