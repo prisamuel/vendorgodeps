@@ -34,8 +34,7 @@ func main() {
 	fileContent, err := ioutil.ReadFile("Godeps/godeps.json")
 
 	if err != nil {
-		fmt.Println("Unable to read file")
-		log.Fatal(err)
+		log.Fatalf("Unable to read godeps.json file: %v\n", err)
 	}
 
 	//Dependencies ...
