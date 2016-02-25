@@ -65,7 +65,7 @@ func main() {
 	}
 
 	fmt.Println("vendoring submodules")
-	fmt.Println("Please run the git checkout commmand below to use the right versions in GoDeps")
+	fmt.Println("please run the git checkout commmand below to use the right versions in GoDeps")
 
 	for repoPath, hash := range submodules {
 		time.Sleep(1 * time.Second)
