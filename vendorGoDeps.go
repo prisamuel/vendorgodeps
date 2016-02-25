@@ -7,13 +7,12 @@ import (
 	"log"
 	"os"
 	"os/exec"
-	"regexp"
 	"strings"
 	"time"
 )
 
 var (
-	importPath *regexp.Regexp
+	importPath string
 	command    string
 	errs       []string
 )
