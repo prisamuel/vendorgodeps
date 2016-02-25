@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"os"
 	"os/exec"
 	"regexp"
@@ -34,7 +35,7 @@ func main() {
 
 	if err != nil {
 		fmt.Println("Unable to read file")
-		panic(err)
+		log.Fatal(err)
 	}
 
 	//Dependencies ...
@@ -88,13 +89,13 @@ func main() {
 		fmt.Println("successfully vendored all dependencies")
 		fmt.Println("deleting Godeps folder")
 		if err := exec.Command(command, "rm", "-r", "Godeps").Run(); err != nil {
-			fmt.Fprintln(os.Stderr, err)
+			log.Fatalf("error removing Godeps folder: %v\n", err)
 		}
 		if err := exec.Command(command, "add", ".").Run(); err != nil {
-			fmt.Fprintln(os.Stderr, err)
+			log.Fatalf("error staging deleted Godeps folder: %v\n", err)
 		}
 		if err := exec.Command(command, "commit", "-m", "deleted Godeps folder and added gitmodules file").Run(); err != nil {
-			fmt.Fprintln(os.Stderr, err)
+			log.Fatalf("error committing deleted Godeps folder: %v\n", err)
 		}
 	}
 }
