@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"os"
 	"os/exec"
 	"regexp"
@@ -34,7 +35,7 @@ func main() {
 
 	if err != nil {
 		fmt.Println("Unable to read file")
-		panic(err)
+		log.Fatal(err)
 	}
 
 	//Dependencies ...
@@ -64,7 +65,7 @@ func main() {
 	}
 
 	fmt.Println("vendoring submodules")
-	fmt.Println("Please run the git checkout commmand below to use the right versions in GoDeps")
+	fmt.Println("please run the git checkout commmand below to use the right versions in GoDeps")
 
 	for repoPath, hash := range submodules {
 		time.Sleep(1 * time.Second)
@@ -78,7 +79,7 @@ func main() {
 		}
 	}
 
-	if len(errs) > 1 {
+	if len(errs) > 0 {
 		for _, skipped := range errs {
 			fmt.Println("unable to vendor", skipped)
 		}
@@ -88,13 +89,13 @@ func main() {
 		fmt.Println("successfully vendored all dependencies")
 		fmt.Println("deleting Godeps folder")
 		if err := exec.Command(command, "rm", "-r", "Godeps").Run(); err != nil {
-			fmt.Fprintln(os.Stderr, err)
+			log.Fatalf("error removing Godeps folder: %v\n", err)
 		}
 		if err := exec.Command(command, "add", ".").Run(); err != nil {
-			fmt.Fprintln(os.Stderr, err)
+			log.Fatalf("error staging deleted Godeps folder: %v\n", err)
 		}
 		if err := exec.Command(command, "commit", "-m", "deleted Godeps folder and added gitmodules file").Run(); err != nil {
-			fmt.Fprintln(os.Stderr, err)
+			log.Fatalf("error committing deleted Godeps folder: %v\n", err)
 		}
 	}
 }
