@@ -78,7 +78,7 @@ func main() {
 		}
 	}
 
-	if len(errs) > 1 {
+	if len(errs) > 0 {
 		for _, skipped := range errs {
 			fmt.Println("unable to vendor", skipped)
 		}
