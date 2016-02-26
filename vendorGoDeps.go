@@ -12,10 +12,9 @@ import (
 )
 
 var (
-	command    string
-	importPath string
-	errs       []string
-	deps       Godeps
+	command string
+	errs    []string
+	deps    Godeps
 )
 
 // Dependency represents a godeps dependency.
