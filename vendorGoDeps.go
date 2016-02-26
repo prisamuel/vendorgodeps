@@ -11,12 +11,6 @@ import (
 	"time"
 )
 
-var (
-	command string
-	errs    []string
-	deps    Godeps
-)
-
 // Dependency represents a godeps dependency.
 type Dependency struct {
 	ImportPath string `json:"ImportPath"`
@@ -37,16 +31,14 @@ type Godeps struct {
 	GoVersion string       `json:"GoVersion"`
 }
 
-func init() {
-	command = "git"
-}
-
 func main() {
 	fileContent, err := ioutil.ReadFile("Godeps/godeps.json")
 
 	if err != nil {
 		log.Fatalf("Unable to read godeps.json file: %v\n", err)
 	}
+
+	var deps Godeps
 
 	if err := json.Unmarshal([]byte(fileContent), &deps); err != nil {
 		log.Fatal(err)
@@ -63,6 +55,9 @@ func main() {
 
 	fmt.Println("vendoring submodules")
 	fmt.Println("please run the git checkout commmand below to use the right versions in GoDeps")
+
+	command := "git"
+	errs := []string{}
 
 	for repoPath, hash := range submodules {
 		time.Sleep(1 * time.Second)
