@@ -12,21 +12,34 @@ import (
 )
 
 var (
-	importPath string
 	command    string
+	importPath string
 	errs       []string
+	deps       Godeps
 )
+
+// Dependency represents a godeps dependency.
+type Dependency struct {
+	ImportPath string `json:"ImportPath"`
+	Revision   string `json:"Rev"`
+}
+
+func (dep *Dependency) extractRepoName() string {
+	path := strings.Split(dep.ImportPath, "/")
+	if len(path) <= 3 {
+		return dep.ImportPath
+	}
+	return strings.Join(path[:3], "/")
+}
+
+// Godeps represents a set of godeps dependencies.
+type Godeps struct {
+	Deps      []Dependency `json:"Deps"`
+	GoVersion string       `json:"GoVersion"`
+}
 
 func init() {
 	command = "git"
-}
-
-func extractRepoName(importPath string) string {
-	path := strings.Split(importPath, "/")
-	if len(path) <= 3 {
-		return importPath
-	}
-	return strings.Join(path[:3], "/")
 }
 
 func main() {
@@ -36,19 +49,6 @@ func main() {
 		log.Fatalf("Unable to read godeps.json file: %v\n", err)
 	}
 
-	//Dependencies ...
-	type Dependencies struct {
-		ImportPath string `json:"ImportPath"`
-		Revision   string `json:"Rev"`
-	}
-
-	type Godeps struct {
-		Deps      []Dependencies `json:"Deps"`
-		GoVersion string         `json:"GoVersion"`
-	}
-
-	var deps Godeps
-
 	if err := json.Unmarshal([]byte(fileContent), &deps); err != nil {
 		log.Fatal(err)
 	}
@@ -57,7 +57,7 @@ func main() {
 
 	for _, dep := range deps.Deps {
 		if dep.ImportPath != "" {
-			repoName := extractRepoName(dep.ImportPath)
+			repoName := dep.extractRepoName()
 			submodules[repoName] = dep.Revision
 		}
 	}
